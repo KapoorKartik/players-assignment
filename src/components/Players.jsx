@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import DateTimeLocal from "datetime-utc-local";
+import { Grid, H1, Img } from "./Player.styled";
 export const Players = () => {
   const [data, setData] = useState();
   useEffect(() => {
@@ -48,7 +48,10 @@ export const Players = () => {
   //   let rk = new Date(kk.getTime() + off * 1000 * -1 * 60 + 86400000);
   //   console.log("rk:", rk);
   // }
+
   // converting date in local date and time and saving in localTime varible
+
+  // ***********assuming given date is dd/mm/yyy format*********
   sortedData?.forEach((e) => {
     // console.log(e.UpComingMatchesList[0].MDate);
     const utc = e.UpComingMatchesList[0].MDate;
@@ -81,27 +84,40 @@ export const Players = () => {
 
         e.localTime = newTimeString;
       }
+    } else {
+      e.localTime = 0;
     }
   });
   return (
     <>
-      <div>
+      <H1>Players Details</H1>
+      <Grid>
         {sortedData?.map((e, i) => {
           return (
-            <>
-              <img src={images[`${e.Id}.jpg`]} alt={e.PFName} />
+            <div>
+              <Img src={images[`${e.Id}.jpg`]} alt={e.PFName} />
               <h3>{e.PFName}</h3>
               <h4>Skills: {e.SkillDesc}</h4>
               <h4>Value: ${e.Value}</h4>
               <h4>
-                Upcoming Match : {e.UpComingMatchesList[0].CCode} vs{" "}
-                {e.UpComingMatchesList[0].VsCCode}
+                Upcoming Match :{" "}
+                {e.UpComingMatchesList[0].CCode.length === 0 ? (
+                  <>No Match Scheduled</>
+                ) : (
+                  <>
+                    {e.UpComingMatchesList[0].CCode} Vs{" "}
+                    {e.UpComingMatchesList[0].VsCCode}
+                  </>
+                )}
               </h4>
-              <h4>Next Match Time: {e.localTime}</h4>
-            </>
+              <h4>
+                Next Match Time:{" "}
+                {e.localTime === 0 ? <>No Match Scheduled </> : e.localTime}
+              </h4>
+            </div>
           );
         })}
-      </div>
+      </Grid>
     </>
   );
 };
