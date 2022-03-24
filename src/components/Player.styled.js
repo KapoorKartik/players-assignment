@@ -15,4 +15,12 @@ const Img = styled.img`
   width: 300px;
   height: 300px;
 `;
-export { Div, Grid, H1, Img };
+const Input = styled.input`
+  border: 1px solid blue;
+  width: 350px;
+  height: 35px;
+`;
+const Btn = styled.button`
+  width: 100px;
+`;
+export { Div, Grid, H1, Img, Input, Btn };

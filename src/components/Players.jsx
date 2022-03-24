@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Grid, H1, Img } from "./Player.styled";
+import { Btn, Grid, H1, Img, Input } from "./Player.styled";
 export const Players = () => {
   const [data, setData] = useState();
+  const [query, setQuery] = useState("");
+  console.log("query:", query);
   useEffect(() => {
     axios.get("https://api.npoint.io/20c1afef1661881ddc9c").then(({ data }) => {
       // console.log("data", data);
@@ -22,34 +24,12 @@ export const Players = () => {
     require.context("../player-images", false, /\.(png|jpe?g|svg)$/)
   );
   // sort in ascending order of players value
-  const sortedData = data?.playerList?.sort((a, b) => {
+  let sortedData = data?.playerList?.sort((a, b) => {
     return +a.Value - +b.Value;
   });
-  // convert utc to specific timezone example to undertand better
-  // if (sortedData) {
-  //   // console.log("p1:", sortedData[0]);
-  //   const utc = sortedData[0]?.UpComingMatchesList[0]?.MDate;
-
-  //   // console.log("utc:", utc);
-  //   const uDate = new Date(utc).toLocaleDateString().split("/");
-  //   const time = new Date(utc).toLocaleTimeString();
-  //   // console.log("time:", time);
-  //   let temp = uDate[0];
-  //   uDate[0] = uDate[1];
-  //   uDate[1] = temp;
-  //   // console.log("uDate:", uDate);
-  //   let newDate = uDate.join("/") + " " + time;
-  //   // console.log("newDate:", newDate);
-  //   let kk = new Date(newDate);
-  //   let off = kk.getTimezoneOffset();
-  //   console.log("off:", off);
-  //   console.log("kk:", kk.getTime());
-  //   // in one day there is 86400000 ms
-  //   let rk = new Date(kk.getTime() + off * 1000 * -1 * 60 + 86400000);
-  //   console.log("rk:", rk);
-  // }
-
-  // converting date in local date and time and saving in localTime varible
+  if (sortedData) {
+    console.log(sortedData[0]);
+  }
 
   // ***********assuming given date is dd/mm/yyy format*********
   sortedData?.forEach((e) => {
@@ -88,9 +68,21 @@ export const Players = () => {
       e.localTime = 0;
     }
   });
+  const search = () => {
+    const filterArr = sortedData.filter(
+      (e) => e.PFName === query || e.TName === query
+    );
+    setData(filterArr);
+  };
+  console.log("sss", sortedData);
   return (
     <>
       <H1>Players Details</H1>
+      <Input
+        placeholder="search by team name or player name"
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <Btn onClick={search}>Search</Btn>
       <Grid>
         {sortedData?.map((e, i) => {
           return (
@@ -111,7 +103,7 @@ export const Players = () => {
                 )}
               </h4>
               <h4>
-                Next Match Time:{" "}
+                Match Time:{" "}
                 {e.localTime === 0 ? <>No Match Scheduled </> : e.localTime}
               </h4>
             </div>
@@ -121,3 +113,28 @@ export const Players = () => {
     </>
   );
 };
+// convert utc to specific timezone example to undertand better
+// if (sortedData) {
+//   // console.log("p1:", sortedData[0]);
+//   const utc = sortedData[0]?.UpComingMatchesList[0]?.MDate;
+
+//   // console.log("utc:", utc);
+//   const uDate = new Date(utc).toLocaleDateString().split("/");
+//   const time = new Date(utc).toLocaleTimeString();
+//   // console.log("time:", time);
+//   let temp = uDate[0];
+//   uDate[0] = uDate[1];
+//   uDate[1] = temp;
+//   // console.log("uDate:", uDate);
+//   let newDate = uDate.join("/") + " " + time;
+//   // console.log("newDate:", newDate);
+//   let kk = new Date(newDate);
+//   let off = kk.getTimezoneOffset();
+//   console.log("off:", off);
+//   console.log("kk:", kk.getTime());
+//   // in one day there is 86400000 ms
+//   let rk = new Date(kk.getTime() + off * 1000 * -1 * 60 + 86400000);
+//   console.log("rk:", rk);
+// }
+
+// converting date in local date and time and saving in localTime varible
